@@ -1,0 +1,223 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Cormorant Garamond", ui-serif, Georgia, serif;
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --color-ink-950: #070406;
+  --color-ink-900: #0c0709;
+  --color-ink-850: #120b0e;
+  --color-ink-800: #1a1013;
+  --color-ink-700: #241619;
+  --color-ink-600: #332024;
+
+  --color-blood-800: #5c0d18;
+  --color-blood-700: #7a121f;
+  --color-blood-600: #9b1b2e;
+  --color-blood-500: #c0203a;
+  --color-blood-400: #e23a55;
+
+  --color-gold-600: #9a7730;
+  --color-gold-500: #b8913f;
+  --color-gold-400: #d4af6a;
+
+  --color-bone-100: #f5efec;
+  --color-bone-200: #e4d9d4;
+  --color-bone-300: #c8b9b4;
+  --color-bone-400: #9b8a87;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-ink-950);
+    color: var(--color-bone-300);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: var(--color-blood-600);
+    color: var(--color-bone-100);
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0607;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--color-blood-800), #2a1216);
+    border-radius: 99px;
+  }
+}
+
+/* ---------- Atmosphere ---------- */
+
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.vignette::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background: radial-gradient(ellipse at 50% 40%, transparent 35%, rgba(0, 0, 0, 0.75) 100%);
+}
+
+.glow-blood {
+  background: radial-gradient(circle, rgba(155, 27, 46, 0.5) 0%, rgba(155, 27, 46, 0) 68%);
+}
+
+.hairline {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(212, 175, 106, 0.4), transparent);
+}
+
+.leather {
+  background-color: #100a0c;
+  background-image:
+    radial-gradient(circle at 20% 15%, rgba(155, 27, 46, 0.14), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(212, 175, 106, 0.07), transparent 50%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='4' /%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23f)' opacity='0.35'/%3E%3C/svg%3E");
+}
+
+.text-outline {
+  -webkit-text-stroke: 1px rgba(212, 175, 106, 0.28);
+  color: transparent;
+}
+
+/* ---------- Reveal on scroll ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 1s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 1s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+.reveal.is-in {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ---------- Motion ---------- */
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 38s linear infinite;
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) scale(1.06);
+  }
+}
+
+.animate-drift {
+  animation: drift 14s ease-in-out infinite;
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 3.4s ease-in-out infinite;
+}
+
+/* Latex sheen sweep on hover */
+.sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.sheen::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -120%;
+  width: 60%;
+  height: 220%;
+  transform: rotate(18deg);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.16),
+    rgba(255, 255, 255, 0.02),
+    transparent
+  );
+  transition: left 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+}
+
+.sheen:hover::after {
+  left: 140%;
+}
+
+.card {
+  background: linear-gradient(160deg, rgba(36, 22, 25, 0.75), rgba(10, 6, 8, 0.85));
+  border: 1px solid rgba(212, 175, 106, 0.12);
+  backdrop-filter: blur(2px);
+  transition:
+    border-color 0.4s ease,
+    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.4s ease;
+}
+
+.card:hover {
+  border-color: rgba(212, 175, 106, 0.34);
+  transform: translateY(-4px);
+  box-shadow: 0 24px 60px -30px rgba(192, 32, 58, 0.55);
+}
+
+.label {
+  font-size: 0.68rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
