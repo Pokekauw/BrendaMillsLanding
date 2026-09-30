@@ -5,11 +5,18 @@ import Investments from "@/components/Investments";
 import AdminPanel from "@/components/AdminPanel";
 import ChatWithMe from "@/components/ChatWithMe";
 import { useEffect } from "react";
-import { recordVisit } from "@/lib/analytics";
+import { flushPendingHits, recordVisit } from "@/lib/analytics";
 
 export default function App() {
   useEffect(() => {
+    // Counts this page load in the global cloud counter, and retries any hit that
+    // could not be delivered earlier (offline visitors, short outages).
     recordVisit();
+    void flushPendingHits();
+
+    const retryQueuedHits = () => void flushPendingHits();
+    window.addEventListener("online", retryQueuedHits);
+    return () => window.removeEventListener("online", retryQueuedHits);
   }, []);
 
   return (
