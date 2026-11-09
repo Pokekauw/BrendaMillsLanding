@@ -8,6 +8,7 @@
  * delivered yet - those are retried and never silently dropped.
  */
 import { FREE_GALLERY_IMAGES } from "@/content";
+import { startVisitorTracking, trackVisitorEvent } from "@/lib/visitorTracker";
 import {
   VISITS_COUNTER,
   bulkHitLimit,
@@ -294,18 +295,26 @@ export function recordVisit() {
   if (visitRecordedForPageLoad) return;
   visitRecordedForPageLoad = true;
   recordHit(VISITS_COUNTER);
+  startVisitorTracking();
+}
+
+function imageTarget(src: string) {
+  return FREE_GALLERY_IMAGES.find((image) => image.src === src)?.fileName.replace(/\.[a-z0-9]+$/i, "") || "gallery-image";
 }
 
 export function trackReferral(type: ReferralKey) {
   recordHit(referralCounter(type));
+  trackVisitorEvent("referral_click", type);
 }
 
 export function trackImageView(src: string) {
   recordHit(imageCounterName(src, "view"));
+  trackVisitorEvent("image_view", imageTarget(src));
 }
 
 export function trackImageDownload(src: string) {
   recordHit(imageCounterName(src, "save"));
+  trackVisitorEvent("image_download", imageTarget(src));
 }
 
 async function syncStats(onProgress?: (done: number, total: number) => void): Promise<StatsSyncResult> {
