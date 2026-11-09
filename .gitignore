@@ -1,6 +1,11 @@
 node_modules
 dist
+build
+.data
+*.sqlite
+*.sqlite-*
 .DS_Store
 *.local
 .env
 .env.*
+!.env.example

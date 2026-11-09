@@ -4,25 +4,42 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "tsx server/index.ts",
+    "build": "tsc --noEmit && tsc -p tsconfig.server.json && vite build",
+    "preview": "NODE_ENV=production node build/server/index.js",
+    "start": "NODE_ENV=production node build/server/index.js",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.server.json --noEmit",
+    "test": "tsx --test server/*.test.ts",
+    "admin:hash": "tsx scripts/hash-password.ts"
   },
   "dependencies": {
     "clsx": "2.1.1",
+    "express": "^5.3.0",
+    "express-rate-limit": "^8.7.3",
+    "ipaddr.js": "^2.5.0",
     "react": "19.2.6",
     "react-dom": "19.2.6",
-    "tailwind-merge": "3.4.0"
+    "tailwind-merge": "3.4.0",
+    "ua-parser-js": "^2.0.10"
   },
   "devDependencies": {
     "@tailwindcss/vite": "4.1.17",
+    "@types/express": "^5.0.6",
     "@types/node": "22.19.17",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.1",
     "tailwindcss": "4.1.17",
+    "tsx": "^4.23.15",
     "typescript": "5.9.3",
-    "vite": "7.3.2",
+    "vite": "^7.3.7",
     "vite-plugin-singlefile": "2.3.0"
+  },
+  "overrides": {
+    "esbuild": "^0.28.1",
+    "source-map-js": "^1.2.2"
+  },
+  "engines": {
+    "node": ">=22.13.0"
   }
 }

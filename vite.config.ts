@@ -8,21 +8,15 @@ import { viteSingleFile } from "vite-plugin-singlefile";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss(), viteSingleFile()],
-  resolve: {
-    alias: {
-      "@": path.resolve(__dirname, "src"),
-    },
-  },
+  resolve: { alias: { "@": path.resolve(__dirname, "src") } },
   server: {
     host: true,
-    // Allow the hosted preview/proxy domains to load the dev server.
     allowedHosts: true,
+    fs: {
+      deny: [".env", ".env.*", "*.{crt,pem}", "**/.git/**", "**/.data/**", "**/*.sqlite*", "**/server/**", "**/scripts/**"],
+    },
   },
-  preview: {
-    host: true,
-    allowedHosts: true,
-  },
+  preview: { host: true, allowedHosts: true },
 });

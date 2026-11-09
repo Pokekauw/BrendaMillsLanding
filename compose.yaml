@@ -1,0 +1,17 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      DATA_DIR: /app/data
+      DEMO_MODE: "false"
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      - visitor-data:/app/data
+    # Put your own HTTPS reverse proxy in front. See README before changing
+    # TRUST_PROXY_HOPS: an incorrect value permits IP-header spoofing.
+volumes:
+  visitor-data:
